@@ -22,7 +22,7 @@
   </header>
 
   <!-- Hero -->
-  <section class="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-8">
+  <section id="services" class="max-w-6xl mx-auto px-4 py-16 grid md:grid-cols-2 gap-8">
     <div>
       <h2 class="text-4xl font-bold leading-tight">Tech help that actually fixes the problem — today.</h2>
       <p class="mt-4 text-lg text-gray-600">Fast setup, practical troubleshooting, and buy‑the‑right‑thing advice. Flat rates. Clear scope.</p>
@@ -116,20 +116,19 @@
         <h2 class="text-3xl font-bold">Tell us what you need fixed</h2>
         <p class="mt-2 text-gray-600">Free 10‑minute consult. Same‑day slots often available.</p>
         <p class="mt-6 text-sm">📧 <a class="underline" href="mailto:cag642@msstate.edu">cag642@msstate.edu</a></p>
-        <p class="text-sm">📱 <a class="underline" href="tel:16626173764">662-617-3764</a></p>
+        <p class="text-sm">📱 <a class="underline" href="tel:+16626173764">662-617-3764</a></p>
         <p class="text-sm">📍 In home or remote</p>
       </div>
-      <!-- Formspree-wired form (replace the action URL with your actual endpoint) -->
-      <form action="https://formspree.io/f/meorzanr" method="POST" class="bg-white shadow rounded p-6 space-y-4">
+      <!-- Formspree-wired form with in-page success/error handling -->
+      <form id="contact-form" action="https://formspree.io/f/meorzanr" method="POST" class="bg-white shadow rounded p-6 space-y-4">
         <input type="text" name="name" placeholder="Name" class="w-full border p-2 rounded" required>
         <input type="email" name="email" placeholder="Email" class="w-full border p-2 rounded" required>
         <input type="text" name="phone" placeholder="Phone (optional)" class="w-full border p-2 rounded">
         <textarea name="message" rows="4" placeholder="Describe the issue or project" class="w-full border p-2 rounded" required></textarea>
-        <!-- optional hidden fields -->
         <input type="hidden" name="_subject" value="New inquiry from Campus Tech Help site">
         <input type="text" name="_gotcha" style="display:none">
         <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded">Send</button>
-        <p class="text-xs text-gray-500 text-center">This form is powered by Formspree.</p>
+        <p id="form-status" class="text-sm text-center text-gray-600"></p>
       </form>
     </div>
   </section>
@@ -138,5 +137,33 @@
   <footer class="py-8 border-t text-center text-sm text-gray-600">
     <p>Campus Tech Help · © 2025 All rights reserved.</p>
   </footer>
+
+  <!-- Minimal JS to show success/error without leaving the page -->
+  <script>
+    (function() {
+      const form = document.getElementById('contact-form');
+      const status = document.getElementById('form-status');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        status.textContent = 'Sending...';
+        try {
+          const data = new FormData(form);
+          const res = await fetch(form.action, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json' },
+            body: data
+          });
+          if (res.ok) {
+            status.textContent = 'Thanks! Your message was sent.';
+            form.reset();
+          } else {
+            status.textContent = 'Something went wrong. Check your form ID or try again later.';
+          }
+        } catch (err) {
+          status.textContent = 'Network error. Try again.';
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
